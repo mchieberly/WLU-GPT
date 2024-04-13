@@ -29,8 +29,7 @@ class TextDataEDA:
     def data_overview(self):
         """Print basic information and the first few rows of the dataset."""
         print("\nData Overview:")
-        print(self.df.head())
-        # print(self.df.info()) 
+        print(self.df.head()) 
     
     def word_count_analysis(self):
         """Analyze and print statistics about text length in the dataset."""
@@ -72,10 +71,19 @@ class TextDataEDA:
    
     def save_data(self, savepath):
         """Save the filtered dataset to a new JSON Lines file."""
-        self.df.to_json(savepath, orient='records', lines=True)
+        self.df.to_json(savepath, orient='records', lines=True) 
 
-    
-   
+
+
+
+    def format_data(self, savepath='raw/formatted_training_data.csv'):
+        """Format the data for testing."""
+        formated_df = self.df.apply(lambda x: f"The following is a response from the Washington and Lee website: {x['note']} To learn more, visit {x['url']} ", axis=1)
+       
+       
+        formated_df.to_csv(savepath, escapechar='\\', header=False, index=False)
+
+
 
 
 
@@ -88,12 +96,15 @@ if __name__ == "__main__":
     eda.word_count_analysis()
     eda.data_overview() 
     # eda.word_frequency_analysis()
-    eda.plot_histogram_word_count(sparse=True)
+    # eda.plot_histogram_word_count(sparse=True)
 
     # Run Data Filtering method
     eda.filter_data(min_word_count=3, max_word_count=40, keywords=[])
-    eda.save_data('raw/filtered_notes.jsonl')
+    # eda.save_data('raw/filtered_notes.jsonl')
 
     # Run Filtered Data Visualization methods
     eda.word_count_analysis()
-    eda.plot_histogram_word_count(sparse=False)
+    # eda.plot_histogram_word_count(sparse=False)
+
+    # Run Data Formating for testing
+    eda.format_data()
