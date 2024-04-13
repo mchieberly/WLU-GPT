@@ -57,11 +57,11 @@ for url in tqdm(urls):
 
     except Exception as e:
         # Log errors to a file instead of printing
-        with open('data/error_log.txt', 'a') as log_file:
+        with open('raw/error_log.txt', 'a') as log_file:
             log_file.write(f'Failed to process {url}: {e}\n')
 
 # Saving cleaned and structured data to a `.jsonl` file
-with open('data/notes.jsonl', 'w') as f:
+with open('raw/notes.jsonl', 'w') as f:
     for entry in data:
         json.dump(entry, f)
         f.write('\n')
