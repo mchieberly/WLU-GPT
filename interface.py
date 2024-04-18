@@ -29,8 +29,9 @@ phi2 = pipeline(
 )
 
 # Function that accepts a prompt and generates text using the phi2 pipeline
-def generate(message, chat_history, max_new_tokens):
-    instruction = "You are a helpful chatbot answers questions from 'User' about Washington and Lee University."
+def generate(message, chat_history):
+    max_new_tokens = 64
+    instruction = "You answers questions from 'User' about Washington and Lee University."
     final_prompt = f"Instruction: {instruction}\n"
 
     for sent, received in chat_history:
@@ -78,24 +79,15 @@ def generate(message, chat_history, max_new_tokens):
 with gr.Blocks() as demo:
     gr.Markdown(
         """
-  # W&L Chatbot Using Phi-2 and QLoRA
-  This chatbot was created using Microsoft's 2.7 billion parameter [Phi-2](https://huggingface.co/microsoft/phi-2) Transformer model. It has been tuned with QLoRA to answer questions about Washington and Lee University.
-  
-  Created by Malachi Eberly, Bennett Ehret, Micah Tongen, Barrett Bourgeois, and Armando Mendez
-    """
-    )
-
-    tokens_slider = gr.Slider(
-        8,
-        128,
-        value=25,
-        label="Maximum new tokens",
-        info="A larger value gives you longer text responses but results in a slower response time.",
+        # W&L Chatbot Using Phi-2 and QLoRA
+        This chatbot was created using Microsoft's 2.7 billion parameter [Phi-2](https://huggingface.co/microsoft/phi-2) Transformer model. It has been tuned with QLoRA to answer questions about Washington and Lee University.
+        
+        Created by Malachi Eberly, Bennett Ehret, Micah Tongen, Barrett Bourgeois, and Armando Mendez
+        """
     )
 
     chatbot = gr.ChatInterface(
         fn=generate,
-        additional_inputs=[tokens_slider],
         stop_btn=None,
         examples=[["What is Washington and Lee University?"], ["What majors are offered at W&L?"], ["What courses should a First-Year take?"], ["How many students attend W&L?"], ["What athletic teams are available?"]]
     )
