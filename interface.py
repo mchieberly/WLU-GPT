@@ -1,4 +1,5 @@
 import gradio as gr
+from peft import PeftModel
 
 import torch
 from transformers import (
@@ -10,13 +11,25 @@ from transformers import (
 from threading import Thread
 
 # The huggingface model id for Microsoft's phi-2 model
-checkpoint = "microsoft/phi-2"
+base_model_id = "microsoft/phi-2"
 
 # Download and load model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(
-    checkpoint, torch_dtype=torch.float32, device_map="cpu", trust_remote_code=True
+tokenizer = AutoTokenizer.from_pretrained(
+    base_model_id,
+    add_bos_token=True,
+    trust_remote_code=True,
+    use_fast=False
 )
+tokenizer.pad_token = tokenizer.eos_token
+
+base_model = AutoModelForCausalLM.from_pretrained(
+    base_model_id,
+    device_map="auto",
+    trust_remote_code=True,
+    load_in_8bit=True,
+    torch_dtype=torch.float16,
+)
+model = PeftModel.from_pretrained(base_model, "./training/checkpoint-100")
 
 # Text generation pipeline
 phi2 = pipeline(
