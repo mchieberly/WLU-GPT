@@ -30,7 +30,7 @@ phi2 = pipeline(
 
 # Function that accepts a prompt and generates text using the phi2 pipeline
 def generate(message, chat_history, max_new_tokens):
-    instruction = "You are a helpful chatbot answers questions from 'User' about Washington and Lee University."
+    instruction = "You are a helpful chatbot that answers questions from 'User' about Washington and Lee University."
     final_prompt = f"Instruction: {instruction}\n"
 
     for sent, received in chat_history:
