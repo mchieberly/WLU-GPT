@@ -13,15 +13,7 @@ from threading import Thread
 # The huggingface model id for Microsoft's phi-2 model
 base_model_id = "microsoft/phi-2"
 
-# Download and load model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(
-    base_model_id,
-    add_bos_token=True,
-    trust_remote_code=True,
-    use_fast=False
-)
-tokenizer.pad_token = tokenizer.eos_token
-
+base_model_id = "microsoft/phi-2"
 base_model = AutoModelForCausalLM.from_pretrained(
     base_model_id,
     device_map="auto",
@@ -29,6 +21,9 @@ base_model = AutoModelForCausalLM.from_pretrained(
     load_in_8bit=True,
     torch_dtype=torch.float16,
 )
+
+tokenizer = AutoTokenizer.from_pretrained(base_model_id, add_bos_token=True, trust_remote_code=True, use_fast=False)
+tokenizer.pad_token = tokenizer.eos_token
 model = PeftModel.from_pretrained(base_model, "./training/checkpoint-100")
 
 # Text generation pipeline
@@ -38,7 +33,7 @@ phi2 = pipeline(
     model=model,
     pad_token_id=tokenizer.eos_token_id,
     eos_token_id=tokenizer.eos_token_id,
-    device_map="cpu",
+    device_map="auto",
 )
 
 # Function that accepts a prompt and generates text using the phi2 pipeline
